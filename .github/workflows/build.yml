@@ -12,7 +12,6 @@ jobs:
 
     steps:
     - name: Checkout
-    - name: Checkout
       uses: actions/checkout@v4
 
     - name: Setup Python
@@ -61,4 +60,3 @@ jobs:
       with:
         name: manou-social-apk
         path: bin/*.apk
-
