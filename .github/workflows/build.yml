@@ -12,6 +12,7 @@ jobs:
 
     steps:
     - name: Checkout
+    - name: Checkout
       uses: actions/checkout@v4
 
     - name: Setup Python
@@ -25,7 +26,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install System Dependencies
+    - name: Install System Dependencies & JAXB
       run: |
         sudo apt update
         sudo apt install -y \
@@ -39,21 +40,11 @@ jobs:
           autoconf \
           automake \
           libtool \
-          pkg-config
+          pkg-config \
+          libjaxb-java
 
-    - name: Set up Android SDK Manually
-      run: |
-        export ANDROID_HOME=$HOME/android-sdk
-        mkdir -p $ANDROID_HOME/cmdline-tools
-        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
-        unzip -q cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
-        mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
-        
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --licenses
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-        
-        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-        echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
 
     - name: Install Buildozer and dependencies
       run: |
@@ -63,12 +54,11 @@ jobs:
 
     - name: Build APK with Buildozer
       run: |
-        export ANDROID_HOME=$HOME/android-sdk
-        # تمرير المسار صراحة لـ buildozer لكي لا يبحث في المسار القديم
-        buildozer --profile default android debug
+        buildozer android debug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: manou-social-apk
         path: bin/*.apk
+
