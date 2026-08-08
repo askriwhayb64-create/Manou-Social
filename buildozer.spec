@@ -1,30 +1,48 @@
 [app]
 
+# (str) Title of your application
 title = Manou Social
+
+# (str) Package name
 package.name = manousocial
+
+# (str) Package domain (needed for android packaging)
 package.domain = org.manou
 
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
+# (list) Source files to include (let it blank to include all files)
+source.include_exts = py,png,jpg,kv,atlas,json
 
-version = 1.0
+# (list) Source directories to include
+source.include_dirs = 
 
-requirements = python3,kivy,requests,certifi,urllib3,idna,charset-normalizer
+# (list) Application requirements
+requirements = python3,kivy
 
+# (list) Supported orientations
 orientation = portrait
-fullscreen = 0
 
-android.permissions = INTERNET
+#
+# Android specific
+#
 
+# (int) Target Android API, should be as high as possible.
 android.api = 33
-android.minapi = 21
+
+# (int) Minimum API your APK will support
+android.min_api = 21
+
+# (str) Android SDK version to use
+android.sdk = 33
+
+# (str) Android NDK version to use
 android.ndk = 25b
-android.archs = arm64-v8a, armeabi-v7a
-android.androidx = True
 
-# إجبار البناء على مسار الـ SDK الصحيح وتجنب أي خطأ في الإصدارات
-android.sdk_path = /home/runner/android-sdk
+# (int) Android NDK API to use.
+android.ndk_api = 21
 
-[buildozer]
-log_level = 2
-warn_root = 1
+# (str) Android build tools version to use
+android.build_tools_version = 33.0.2
+
+# (list) The Android archs to build for
+android.archs = arm64-v8a
+
