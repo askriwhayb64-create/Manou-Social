@@ -62,17 +62,13 @@ jobs:
         pip install cython==0.29.36
 
     - name: Build APK with Buildozer
-      env:
-        ANDROID_HOME: ${{ github.workspace }}/../android-sdk
       run: |
-        # ضبط مسار الـ SDK ليراه Buildozer بوضوح
         export ANDROID_HOME=$HOME/android-sdk
-        buildozer android debug
+        # تمرير المسار صراحة لـ buildozer لكي لا يبحث في المسار القديم
+        buildozer --profile default android debug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: manou-social-apk
         path: bin/*.apk
-
-
