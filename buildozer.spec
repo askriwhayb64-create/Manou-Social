@@ -23,7 +23,7 @@ android.archs = arm64-v8a, armeabi-v7a
 android.androidx = True
 
 # إجبار البناء على مسار الـ SDK الصحيح وتجنب أي خطأ في الإصدارات
-android.sdk_path = /usr/local/lib/android/sdk
+android.sdk_path = /home/runner/android-sdk
 
 [buildozer]
 log_level = 2
