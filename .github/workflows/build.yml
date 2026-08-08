@@ -19,13 +19,13 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Setup Java JDK 17
+    - name: Setup Java JDK 11
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '11'
 
-    - name: Install system packages and JAXB
+    - name: Install System Dependencies
       run: |
         sudo apt update
         sudo apt install -y \
@@ -39,8 +39,7 @@ jobs:
           autoconf \
           automake \
           libtool \
-          pkg-config \
-          libjaxb-java
+          pkg-config
 
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
@@ -60,4 +59,3 @@ jobs:
       with:
         name: manou-social-apk
         path: bin/*.apk
-
