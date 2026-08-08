@@ -42,15 +42,6 @@ jobs:
           pkg-config \
           libjaxb-java
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Accept Android Licenses and Install Tools
-      run: |
-        export ANDROID_HOME=$ANDROID_HOME
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-
     - name: Install Buildozer and dependencies
       run: |
         python -m pip install --upgrade pip
@@ -66,3 +57,4 @@ jobs:
       with:
         name: manou-social-apk
         path: bin/*.apk
+
