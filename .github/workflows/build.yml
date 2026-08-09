@@ -41,21 +41,23 @@ jobs:
           libtool \
           pkg-config
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      env:
-        SKIP_JDK_VERSION_CHECK: true
-
-    - name: Pre-accept SDK licenses and Install Build-Tools 37
+    - name: Install Android SDK Command-line Tools
       run: |
+        mkdir -p "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools"
+        cd /tmp
+
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
+        unzip -q commandlinetools-linux-13114758_latest.zip
+
+        mkdir -p "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest"
+        mv cmdline-tools/* "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/"
+
+        export ANDROID_HOME="$HOME/.buildozer/android/platform/android-sdk"
+        export ANDROID_SDK_ROOT="$ANDROID_HOME"
+        export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+
         yes | sdkmanager --licenses || true
-        sdkmanager "platform-tools" "build-tools;37.0.0"
-
-    - name: Link SDK to Buildozer Path
-      run: |
-        mkdir -p $HOME/.buildozer/android/platform
-        rm -rf $HOME/.buildozer/android/platform/android-sdk
-        ln -s $ANDROID_HOME $HOME/.buildozer/android/platform/android-sdk
+        sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
     - name: Install Buildozer and Cython
       run: |
@@ -65,6 +67,10 @@ jobs:
 
     - name: Build APK
       run: |
+        export ANDROID_HOME="$HOME/.buildozer/android/platform/android-sdk"
+        export ANDROID_SDK_ROOT="$ANDROID_HOME"
+        export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+
         buildozer -v android debug
 
     - name: Upload APK Artifact
