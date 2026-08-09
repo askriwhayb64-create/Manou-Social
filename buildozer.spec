@@ -1,54 +1,70 @@
-[app]
+name: Build Android APK
 
-# (str) Title of your application
-title = Manou Social
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-# (str) Package name
-package.name = manousocial
+jobs:
+  build:
+    runs-on: ubuntu-22.04
 
-# (str) Package domain (needed for android packaging)
-package.domain = org.manou
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
-# (str) Source code where the main.py lives
-source.dir = .
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
 
-# (list) Source files to include (let it blank to include all files)
-source.include_exts = py,png,jpg,kv,atlas,json
+    - name: Setup Java JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-# (list) Source directories to include
-source.include_dirs = 
+    - name: Install System Dependencies & JAXB
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          build-essential \
+          git \
+          zip \
+          unzip \
+          python3-dev \
+          libffi-dev \
+          libssl-dev \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config \
+          libjaxb-java
 
-# (list) Application requirements
-requirements = python3,kivy
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
 
-# (str) Version of the application
-version = 0.1
+    - name: Accept Licenses and Force Build Tools 33
+      run: |
+        export ANDROID_HOME=$ANDROID_SDK_ROOT
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-# (list) Supported orientations
-orientation = portrait
+    - name: Install Buildozer and dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install buildozer
+        pip install cython==0.29.36
 
-#
-# Android specific
-#
+    - name: Build APK with Buildozer
+      run: |
+        buildozer android debug
 
-# (int) Target Android API, should be as high as possible.
-android.api = 33
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: manou-social-apk
+        path: bin/*.apk
 
-# (int) Minimum API your APK will support
-android.min_api = 21
-
-# (str) Android SDK version to use
-android.sdk = 33
-
-# (str) Android NDK version to use
-android.ndk = 25b
-
-# (int) Android NDK API to use.
-android.ndk_api = 21
-
-# (str) Android build tools version to use
-android.build_tools_version = 33.0.2
-
-# (list) The Android archs to build for
-android.archs = arm64-v8a
 
