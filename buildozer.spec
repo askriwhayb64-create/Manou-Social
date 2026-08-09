@@ -9,6 +9,9 @@ package.name = manousocial
 # (str) Package domain (needed for android packaging)
 package.domain = org.manou
 
+# (str) Source code where the main.py lives
+source.dir = .
+
 # (list) Source files to include (let it blank to include all files)
 source.include_exts = py,png,jpg,kv,atlas,json
 
@@ -17,6 +20,9 @@ source.include_dirs =
 
 # (list) Application requirements
 requirements = python3,kivy
+
+# (str) Version of the application
+version = 0.1
 
 # (list) Supported orientations
 orientation = portrait
