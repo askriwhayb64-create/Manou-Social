@@ -42,6 +42,21 @@ jobs:
           pkg-config \
           libjaxb-java
 
+    - name: Set up Android SDK and Accept Licenses
+      run: |
+        export ANDROID_HOME=$HOME/android-sdk
+        mkdir -p $ANDROID_HOME/cmdline-tools
+        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+        unzip -q cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
+        mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
+        
+        # قبول التراخيص إجبارياً وتثبيت الإصدار 33 نظيفاً
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --licenses
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+        
+        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+        echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
     - name: Install Buildozer and dependencies
       run: |
         python -m pip install --upgrade pip
@@ -50,6 +65,7 @@ jobs:
 
     - name: Build APK with Buildozer
       run: |
+        export ANDROID_HOME=$HOME/android-sdk
         buildozer android debug
 
     - name: Upload APK Artifact
