@@ -1,5 +1,4 @@
 name: Build Android APK
-name: Build Android APK
 
 on:
   push:
@@ -98,5 +97,3 @@ jobs:
       with:
         name: manou-social-apk
         path: bin/*.apk
-
-
