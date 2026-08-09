@@ -8,7 +8,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
 source.include_dirs = 
 
-requirements = python3,kivy
+requirements = python3.10,kivy
 version = 0.1
 orientation = portrait
 
