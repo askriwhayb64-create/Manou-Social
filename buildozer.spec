@@ -1,70 +1,21 @@
-name: Build Android APK
+[app]
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+title = Manou Social
+package.name = manousocial
+package.domain = org.manou
 
-jobs:
-  build:
-    runs-on: ubuntu-22.04
+source.dir = .
+source.include_exts = py,png,jpg,kv,atlas,json
+source.include_dirs = 
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+requirements = python3,kivy
+version = 0.1
+orientation = portrait
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.10"
-
-    - name: Setup Java JDK 17
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-
-    - name: Install System Dependencies & JAXB
-      run: |
-        sudo apt update
-        sudo apt install -y \
-          build-essential \
-          git \
-          zip \
-          unzip \
-          python3-dev \
-          libffi-dev \
-          libssl-dev \
-          autoconf \
-          automake \
-          libtool \
-          pkg-config \
-          libjaxb-java
-
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Accept Licenses and Force Build Tools 33
-      run: |
-        export ANDROID_HOME=$ANDROID_SDK_ROOT
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-
-    - name: Install Buildozer and dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install buildozer
-        pip install cython==0.29.36
-
-    - name: Build APK with Buildozer
-      run: |
-        buildozer android debug
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: manou-social-apk
-        path: bin/*.apk
-
-
+android.api = 33
+android.min_api = 21
+android.sdk = 33
+android.ndk = 25b
+android.ndk_api = 21
+android.build_tools_version = 33.0.2
+android.archs = arm64-v8a
