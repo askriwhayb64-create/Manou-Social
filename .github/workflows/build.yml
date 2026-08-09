@@ -25,7 +25,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install System Dependencies
+    - name: Install System Dependencies & JAXB
       run: |
         sudo apt update
         sudo apt install -y \
@@ -48,6 +48,7 @@ jobs:
     - name: Link SDK to Buildozer Path
       run: |
         mkdir -p $HOME/.buildozer/android/platform
+        rm -rf $HOME/.buildozer/android/platform/android-sdk
         ln -s $ANDROID_HOME $HOME/.buildozer/android/platform/android-sdk
 
     - name: Install Buildozer and dependencies
@@ -58,6 +59,7 @@ jobs:
 
     - name: Build APK
       run: |
+        export CLASSPATH=$CLASSPATH:/usr/share/java/jaxb-api.jar:/usr/share/java/jaxb-impl.jar
         python3 -m buildozer android debug
 
     - name: Upload APK Artifact
